@@ -1,0 +1,19 @@
+DTI-Based Mortgage Approval Analysis Summary
+=============================================
+Total Applications Analyzed: 9886
+Overall Average Approval Rating: 0.259
+Predicted Approvals (rating >= 0.5): 1192
+Predicted Denials (rating < 0.5): 8694
+
+Average Approval Rating by Income Group:
+  Low: 0.223
+  Medium: 0.213
+  High: 0.253
+  Very High: 0.348
+
+Output Files:
+  Histogram: output/approval_rating_histogram.png
+  Bar Graph: output/approval_rating_bargraph.png
+  Summary Document: output/analysis_summary.txt
+
+Note: This analysis ignores sensitive attributes such as race and ethnicity.
