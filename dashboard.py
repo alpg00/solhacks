@@ -1,18 +1,25 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()  # Load environment variables
+
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# ----------------------------
-# Data Loading Function
-# ----------------------------
+# Import the chatbot helper function from chatbot.py
+from chatbot import get_chatbot_response
+
+import importlib.metadata
+print("openai version:", importlib.metadata.version("openai"))
+
 @st.cache
 def load_data():
     try:
-        # Replace 'data/loan_data.csv' with your actual data file path
+        # Replace with your actual data file path if available.
         data = pd.read_csv("data/loan_data.csv")
     except Exception as e:
-        # If no file is available, create a dummy dataset for demonstration
+        # Create a dummy dataset if no file is available.
         np.random.seed(42)
         n = 500
         races = ['White', 'Black', 'Hispanic', 'Asian']
@@ -25,30 +32,27 @@ def load_data():
 
 data = load_data()
 
-# ----------------------------
-# Initialize Session State for Navigation
-# ----------------------------
 if 'page' not in st.session_state:
     st.session_state.page = 'Home'
 
-# ----------------------------
-# Define Page Functions
-# ----------------------------
 def show_home():
     st.title("Welcome to the Fair Housing Loan Approval Dashboard")
-    st.write("Choose an option below to view different visualizations:")
+    st.write("Choose an option below to view visualizations or ask questions about the graphs:")
     
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("Equality of Opportunity"):
             st.session_state.page = "Opportunity"
-        if st.button("Equality of Outcome"):
-            st.session_state.page = "Outcome"
-    with col2:
         if st.button("Policy Simulation"):
             st.session_state.page = "Simulation"
+    with col2:
+        if st.button("Equality of Outcome"):
+            st.session_state.page = "Outcome"
         if st.button("Credit Score Analysis"):
             st.session_state.page = "CreditScore"
+    with col3:
+        if st.button("Graph Chatbot"):
+            st.session_state.page = "Chatbot"
 
 def show_opportunity():
     st.header("Equality of Opportunity: Baseline Approval Rates")
@@ -100,8 +104,8 @@ def show_simulation():
         baseline_vals = approval_data["Approved"].values
         simulated_vals = simulated_approval_data["Approved"].values
 
-        ax.bar(indices - width / 2, baseline_vals, width, label="Baseline", color="skyblue")
-        ax.bar(indices + width / 2, simulated_vals, width, label="Simulated", color="salmon")
+        ax.bar(indices - width/2, baseline_vals, width, label="Baseline", color="skyblue")
+        ax.bar(indices + width/2, simulated_vals, width, label="Simulated", color="salmon")
         ax.set_xticks(indices)
         ax.set_xticklabels(approval_data.index)
         ax.set_ylabel("Approval Rate")
@@ -119,8 +123,8 @@ def show_credit_score():
         fig, ax = plt.subplots()
         approved = data[data["loan_status"] == "Approved"]
         denied = data[data["loan_status"] == "Denied"]
-        ax.scatter(approved["credit_score"], [1] * len(approved), color="green", label="Approved", alpha=0.5)
-        ax.scatter(denied["credit_score"], [0] * len(denied), color="red", label="Denied", alpha=0.5)
+        ax.scatter(approved["credit_score"], [1]*len(approved), color="green", label="Approved", alpha=0.5)
+        ax.scatter(denied["credit_score"], [0]*len(denied), color="red", label="Denied", alpha=0.5)
         ax.set_xlabel("Credit Score")
         ax.set_ylabel("Loan Status (1 = Approved, 0 = Denied)")
         ax.set_title("Credit Score vs. Loan Approval Outcome")
@@ -131,9 +135,21 @@ def show_credit_score():
     if st.button("Back to Home"):
         st.session_state.page = "Home"
 
-# ----------------------------
-# Render the Appropriate Page
-# ----------------------------
+def show_chatbot():
+    st.header("Graph Chatbot")
+    st.write("Ask any questions about the graphs displayed in this dashboard. The chatbot will only answer questions related to these graphs.")
+    question = st.text_input("Your question about the graphs:")
+    if st.button("Ask"):
+        if not question.strip():
+            st.write("Please enter a question.")
+        else:
+            with st.spinner("Thinking..."):
+                answer = get_chatbot_response(question)
+            st.write("**Answer:**", answer)
+    if st.button("Back to Home"):
+        st.session_state.page = "Home"
+
+# Render the appropriate page based on session state
 if st.session_state.page == "Home":
     show_home()
 elif st.session_state.page == "Opportunity":
@@ -144,3 +160,5 @@ elif st.session_state.page == "Simulation":
     show_simulation()
 elif st.session_state.page == "CreditScore":
     show_credit_score()
+elif st.session_state.page == "Chatbot":
+    show_chatbot()
