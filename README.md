@@ -1,2 +1,6 @@
 # solhacks
 solhacks hackathon project
+credit scoring systems use either equality of opportunity or equality of outcomes in their algorithms to determine who is approved for a loan
+when purchasing a house.
+accord.edu states that "Equality of opportunity holds that as long as the process is fair and just, then the outcome is also fair and just. Equality of Outcome: The core essence of equality of outcomes is social justice. The objective of equality of outcome is not equality or justice but rather equity and social justice."
+we are creating an application where we input this exact data set to the application and select between the two models we created, one using equality of oppportunity and the other using equality of outcomes, and for each algorithm, the algorithm returns "got the loan" or "didn't get the loan" for each individual person. Then, at the end, we will have a third algorithm (called "comparison.alg") that compares the results from the previous two algorithms and shows the percentage disparity between the results of the two, so that we can closely examine and see the differences between the two implementations and have a conversation about what this means in the broader context of ethics of ai and what the future of loan prediction algorithms should look like.
