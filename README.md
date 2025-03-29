@@ -1,0 +1,2 @@
+# solhacks
+solhacks hackathon project
