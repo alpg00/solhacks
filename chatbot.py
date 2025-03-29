@@ -11,8 +11,12 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 print("openai version:", openai.__version__)
 
 # Set the OpenAI API key from the environment variable
-if not openai.api_key:
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
     raise ValueError("OpenAI API key not found. Please check your .env file or environment variable.")
+
+client = OpenAI(api_key=api_key)
+
 
 def get_chatbot_response(question):
     messages = [
