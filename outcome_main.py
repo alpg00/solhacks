@@ -1,6 +1,7 @@
 import json
-from outcome_data_processing import get_grouped_applicants
+from outcome_data_processing import get_grouped_applicants, display_statistics_table_and_graph
 from outcome_thresholds import calculate_approvals, print_statistics
+
 
 def run_pipeline(input_csv, approval_rate=0.5, output_json="decisions.json"):
     try:
@@ -11,11 +12,14 @@ def run_pipeline(input_csv, approval_rate=0.5, output_json="decisions.json"):
         decisions, thresholds = calculate_approvals(
             grouped_applicants,
             approval_rate=approval_rate,
-            ratio_field='debt_to_income_ratio'  # Explicitly specify the field
+            ratio_field='debt_to_income_ratio'
         )
         
         print("\n📊 Approval Statistics:")
         print_statistics(grouped_applicants, thresholds, ratio_field='debt_to_income_ratio')
+        
+        # Display using matplotlib: table and bar chart
+        display_statistics_table_and_graph(grouped_applicants, thresholds, ratio_field='debt_to_income_ratio')
         
         with open(output_json, 'w') as f:
             json.dump(decisions, f, indent=2)
