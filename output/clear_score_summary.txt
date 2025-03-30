@@ -1,0 +1,16 @@
+ClearScore Summary
+==================
+
+ClearScore is defined as the ratio of the minimum average approval rating to the maximum average approval rating across ethnic groups.
+
+Formula: ClearScore = (Minimum Average Approval Rating) / (Maximum Average Approval Rating)
+
+Minimum Average Approval Rating among ethnic groups: 0.234
+Maximum Average Approval Rating among ethnic groups: 0.263
+Computed ClearScore: 0.890
+
+Interpretation:
+- A ClearScore of 1.0 indicates perfect equality: all ethnic groups have the same average approval rating.
+- A ClearScore less than 1.0 indicates disparity among groups, with lower values signaling greater inequality in loan approval fairness.
+
+This metric helps evaluate how evenly the loan approval process treats applicants across different ethnic groups when using a DTI-based approval rating.
