@@ -28,5 +28,5 @@ atexit.register(cleanup)
 time.sleep(5)
 
 # Open the desktop popup window using PyWebView
-window = webview.create_window("Fair Housing Loan Approval App", "http://localhost:8501", width=1000, height=800)
+window = webview.create_window("FairScore: AI-Powered Fairness Analysis", "http://localhost:8501", width=1000, height=800)
 webview.start()

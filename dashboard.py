@@ -1,3 +1,4 @@
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -11,6 +12,7 @@ from io import BytesIO
 
 from chatbot import get_chatbot_response
 from mortgage_model import run_mortgage_model
+from outcome_main import run_pipeline as run_outcome_pipeline
 
 print("openai version:", importlib.metadata.version("openai"))
 
@@ -35,30 +37,41 @@ def load_data():
 def run_model_and_get_paths():
     return run_mortgage_model()
 
-output_paths = run_model_and_get_paths()
 data = load_data()
+output_paths = run_model_and_get_paths()
 
 if 'page' not in st.session_state:
     st.session_state.page = 'Home'
 
 def show_home():
-    st.title("Welcome to the Fair Housing Loan Approval Dashboard")
+    st.title("FairScore: AI-Powered Fairness Analysis for Loan Approvals")
+    st.caption("A Streamlit-based tool for evaluating equity in lending outcomes using data and machine learning.")
     st.write("Choose an option below to view visualizations or ask questions about the graphs:")
 
-    col1, col2, col3 = st.columns(3)
+    # Row 1: ML Algorithm Buttons
+    col_ml1, col_ml2 = st.columns(2)
+    with col_ml1:
+        if st.button("Equality of Outcome Machine Learning Algorithm", key="ml_outcome"):
+            st.session_state.page = "DTI"
+    with col_ml2:
+        if st.button("Equality of Opportunity Machine Learning Algorithm", key="ml_opportunity"):
+            st.session_state.page = "ML"
+
+    # Row 2: Other Feature Buttons (evenly spaced)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
-        if st.button("Equality of Opportunity"):
+        if st.button("Equality of Opportunity", key="opportunity"):
             st.session_state.page = "Opportunity"
-        if st.button("Policy Simulation"):
-            st.session_state.page = "Simulation"
     with col2:
-        if st.button("Equality of Outcome"):
+        if st.button("Equality of Outcome", key="outcome"):
             st.session_state.page = "Outcome"
     with col3:
-        if st.button("DTI Graphs"):
-            st.session_state.page = "DTI"
-        if st.button("Graph Chatbot"):
+        if st.button("Policy Simulation", key="policy"):
+            st.session_state.page = "Simulation"
+    with col4:
+        if st.button("Graph Chatbot", key="chatbot"):
             st.session_state.page = "Chatbot"
+
 
 def show_opportunity():
     st.header("Equality of Opportunity: Baseline Approval Rates")
@@ -126,33 +139,32 @@ def show_simulation():
 def show_dti_graphs():
     st.header("DTI-Based Approval Ratings (Precomputed)")
 
-    st.subheader("📊 Average Approval by Income Group")
+    st.subheader("\U0001F4CA Average Approval by Income Group")
     st.image(output_paths["income_bar"])
 
-    st.subheader("📊 Average Approval by Gender")
+    st.subheader("\U0001F4CA Average Approval by Gender")
     st.image(output_paths["gender_bar"])
 
-    st.subheader("📊 Average Approval by Race")
+    st.subheader("\U0001F4CA Average Approval by Race")
     st.image(output_paths["race_bar"])
 
-    st.subheader("📊 Average Approval by Race & Gender")
+    st.subheader("\U0001F4CA Average Approval by Race & Gender")
     st.image(output_paths["race_gender_bar"])
 
-    # Use BytesIO to force proper file download instead of preview
     with open(output_paths["race_gender_bar"], "rb") as f:
         img_bytes = f.read()
         buffer = BytesIO(img_bytes)
         st.download_button(
-            label="📥 Download Race & Gender Graph as PNG",
+            label="\U0001F4E5 Download Race & Gender Graph as PNG",
             data=buffer,
             file_name="approval_by_race_gender.png",
             mime="image/png"
         )
 
-    st.subheader("📋 Race & Gender Approval Table")
+    st.subheader("\U0001F4CB Race & Gender Approval Table")
     st.image(output_paths["multicategorical_table"])
 
-    st.subheader("📄 Summary Document")
+    st.subheader("\U0001F4C4 Summary Document")
     with open(output_paths["summary"], "r") as f:
         summary_text = f.read()
         st.text(summary_text)
@@ -182,6 +194,28 @@ def show_chatbot():
     if st.button("Back to Home"):
         st.session_state.page = "Home"
 
+def show_outcome_ml():
+    st.header("\U0001F4C9 ML-Based Equality of Opportunity Analysis")
+    st.subheader("\U0001F4CA Approval Rate by Group with Threshold Enforcement")
+    try:
+        fig_path = run_outcome_pipeline("data/bigdata.csv")
+        st.image(fig_path)
+
+        with open(fig_path, "rb") as f:
+            img_bytes = f.read()
+            buffer = BytesIO(img_bytes)
+            st.download_button(
+                label="\U0001F4E5 Download Graph as PNG",
+                data=buffer,
+                file_name="equality_of_opportunity_ml.png",
+                mime="image/png"
+            )
+    except Exception as e:
+        st.error(f"Failed to process ML-based outcome analysis: {e}")
+
+    if st.button("Back to Home"):
+        st.session_state.page = "Home"
+
 # Routing logic
 if st.session_state.page == "Home":
     show_home()
@@ -195,3 +229,5 @@ elif st.session_state.page == "DTI":
     show_dti_graphs()
 elif st.session_state.page == "Chatbot":
     show_chatbot()
+elif st.session_state.page == "ML":
+    show_outcome_ml()
