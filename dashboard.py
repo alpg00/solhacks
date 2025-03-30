@@ -6,20 +6,21 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-
-# Import the chatbot helper function from chatbot.py
-from chatbot import get_chatbot_response
-
 import importlib.metadata
+
+from chatbot import get_chatbot_response
+from mortgage_model import run_mortgage_model
+
 print("openai version:", importlib.metadata.version("openai"))
 
-@st.cache
+# Run the DTI analysis and get image paths
+output_paths = run_mortgage_model()
+
+@st.cache_data
 def load_data():
     try:
-        # Replace with your actual data file path if available.
         data = pd.read_csv("data/loan_data.csv")
     except Exception as e:
-        # Create a dummy dataset if no file is available.
         np.random.seed(42)
         n = 500
         races = ['White', 'Black', 'Hispanic', 'Asian']
@@ -38,7 +39,7 @@ if 'page' not in st.session_state:
 def show_home():
     st.title("Welcome to the Fair Housing Loan Approval Dashboard")
     st.write("Choose an option below to view visualizations or ask questions about the graphs:")
-    
+
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("Equality of Opportunity"):
@@ -53,6 +54,8 @@ def show_home():
     with col3:
         if st.button("Graph Chatbot"):
             st.session_state.page = "Chatbot"
+        if st.button("DTI Graphs"):
+            st.session_state.page = "DTIGraphs"
 
 def show_opportunity():
     st.header("Equality of Opportunity: Baseline Approval Rates")
@@ -149,7 +152,30 @@ def show_chatbot():
     if st.button("Back to Home"):
         st.session_state.page = "Home"
 
-# Render the appropriate page based on session state
+def show_dti_graphs():
+    st.header("DTI-Based Mortgage Analysis Results")
+
+    st.subheader("Approval by Income Group")
+    st.image(output_paths["income_bar"])
+
+    st.subheader("Approval by Gender")
+    st.image(output_paths["gender_bar"])
+
+    st.subheader("Approval by Race")
+    st.image(output_paths["race_bar"])
+
+    st.subheader("Approval by Race & Gender")
+    st.image(output_paths["race_gender_bar"])
+
+    with open(output_paths["summary"], "r", encoding="utf-8") as f:
+        summary = f.read()
+        st.subheader("Analysis Summary")
+        st.text(summary)
+
+    if st.button("Back to Home"):
+        st.session_state.page = "Home"
+
+# Routing logic
 if st.session_state.page == "Home":
     show_home()
 elif st.session_state.page == "Opportunity":
@@ -162,3 +188,5 @@ elif st.session_state.page == "CreditScore":
     show_credit_score()
 elif st.session_state.page == "Chatbot":
     show_chatbot()
+elif st.session_state.page == "DTIGraphs":
+    show_dti_graphs()

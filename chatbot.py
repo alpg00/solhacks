@@ -8,6 +8,7 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+
 print("openai version:", openai.__version__)
 
 # Set the OpenAI API key from the environment variable

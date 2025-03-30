@@ -1,48 +1,6 @@
 DTI-Based Mortgage Approval Analysis Summary
-=============================================
+
 Total Applications Analyzed: 9886
 Overall Average Approval Rating: 0.259
 Predicted Approvals (rating >= 0.5): 1192
 Predicted Denials (rating < 0.5): 8694
-
-Average Approval Rating by Income Group:
-  Low: 0.223
-  Medium: 0.213
-  High: 0.253
-  Very High: 0.348
-
-Average Approval Rating by Gender:
-  Female: 0.251
-  Male: 0.263
-
-Average Approval Rating by Race:
-  2 or more minority races: 0.330
-  American Indian or Alaska Native: 0.321
-  Asian: 0.232
-  Black or African American: 0.243
-  Native Hawaiian or Other Pacific Islander: 0.289
-  White: 0.265
-
-Average Approval Rating by Race & Gender:
-  2 or more minority races Female: 0.266
-  2 or more minority races Male: 0.365
-  American Indian or Alaska Native Female: 0.257
-  American Indian or Alaska Native Male: 0.342
-  Asian Female: 0.233
-  Asian Male: 0.231
-  Black or African American Female: 0.235
-  Black or African American Male: 0.251
-  Native Hawaiian or Other Pacific Islander Female: 0.330
-  Native Hawaiian or Other Pacific Islander Male: 0.263
-  White Female: 0.257
-  White Male: 0.269
-
-Output Files:
-  Histogram: output/approval_rating_histogram.png
-  Income Group Bar Graph: output/approval_rating_bargraph_income.png
-  Gender Bar Graph: output/approval_rating_bargraph_gender.png
-  Race Bar Graph: output/approval_rating_bargraph_race.png
-  Race & Gender Bar Graph: output/approval_rating_bargraph_race_gender.png
-  Summary Document: output/analysis_summary.txt
-
-Note: This analysis ignores sensitive attributes in decision-making, but breakdowns by gender and race are provided for transparency.
