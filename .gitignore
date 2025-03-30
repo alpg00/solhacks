@@ -1,0 +1,20 @@
+# Virtual environments
+venv/
+.env/
+
+# Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE files
+.vscode/
+.idea/
+
+# Dependency files
+pip-wheel-metadata/
+*.egg-info/
+
+# Logs and databases
+*.log
+*.sqlite
