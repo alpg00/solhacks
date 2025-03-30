@@ -69,7 +69,6 @@ plt.savefig(histogram_path)
 plt.close()
 
 # --- Output File 2: Bar Graph of Average Approval Rating by Income Group ---
-# Create income groups if 'income' exists; otherwise, set to "Unknown"
 if 'income' in df.columns:
     try:
         df['income_group'] = pd.qcut(df['income'], q=4, labels=['Low', 'Medium', 'High', 'Very High'])
@@ -79,19 +78,69 @@ if 'income' in df.columns:
 else:
     df['income_group'] = "Unknown"
 
-# Compute average approval rating by income group
-grouped = df.groupby('income_group')['approval_rating'].mean().reset_index()
+grouped_income = df.groupby('income_group')['approval_rating'].mean().reset_index()
 
 plt.figure(figsize=(8, 5))
-plt.bar(grouped['income_group'].astype(str), grouped['approval_rating'], color='skyblue')
+plt.bar(grouped_income['income_group'].astype(str), grouped_income['approval_rating'], color='skyblue')
 plt.title("Average Approval Rating by Income Group")
 plt.xlabel("Income Group")
 plt.ylabel("Average Approval Rating")
-bargraph_path = "output/approval_rating_bargraph.png"
-plt.savefig(bargraph_path)
+bargraph_income_path = "output/approval_rating_bargraph_income.png"
+plt.savefig(bargraph_income_path)
 plt.close()
 
-# --- Output File 3: Analysis Summary Document ---
+# --- Output File 3: Bar Graph of Average Approval Rating by Gender ---
+if 'derived_sex' in df.columns:
+    grouped_gender = df.groupby('derived_sex')['approval_rating'].mean().reset_index()
+else:
+    grouped_gender = pd.DataFrame({'derived_sex': ['Unknown'], 'approval_rating': [np.nan]})
+
+plt.figure(figsize=(8, 5))
+plt.bar(grouped_gender['derived_sex'].astype(str), grouped_gender['approval_rating'], color='lightgreen')
+plt.title("Average Approval Rating by Gender")
+plt.xlabel("Gender")
+plt.ylabel("Average Approval Rating")
+bargraph_gender_path = "output/approval_rating_bargraph_gender.png"
+plt.savefig(bargraph_gender_path)
+plt.close()
+
+# --- Output File 4: Bar Graph of Average Approval Rating by Race ---
+if 'derived_race' in df.columns:
+    grouped_race = df.groupby('derived_race')['approval_rating'].mean().reset_index()
+else:
+    grouped_race = pd.DataFrame({'derived_race': ['Unknown'], 'approval_rating': [np.nan]})
+
+plt.figure(figsize=(10, 5))
+plt.bar(grouped_race['derived_race'].astype(str), grouped_race['approval_rating'], color='salmon')
+plt.title("Average Approval Rating by Race")
+plt.xlabel("Race")
+plt.ylabel("Average Approval Rating")
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+bargraph_race_path = "output/approval_rating_bargraph_race.png"
+plt.savefig(bargraph_race_path)
+plt.close()
+
+# --- Output File 5: Bar Graph of Average Approval Rating by Race & Gender ---
+# Create a combined category column (e.g., "Black Male", "White Female", etc.)
+if 'derived_race' in df.columns and 'derived_sex' in df.columns:
+    df['race_gender'] = df['derived_race'] + " " + df['derived_sex']
+    grouped_rg = df.groupby('race_gender')['approval_rating'].mean().reset_index()
+else:
+    grouped_rg = pd.DataFrame({'race_gender': ['Unknown'], 'approval_rating': [np.nan]})
+
+plt.figure(figsize=(10, 5))
+plt.bar(grouped_rg['race_gender'].astype(str), grouped_rg['approval_rating'], color='orchid')
+plt.title("Average Approval Rating by Race & Gender")
+plt.xlabel("Race & Gender")
+plt.ylabel("Average Approval Rating")
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+bargraph_rg_path = "output/approval_rating_bargraph_race_gender.png"
+plt.savefig(bargraph_rg_path)
+plt.close()
+
+# --- Output File 6: Analysis Summary Document ---
 total_apps = len(df)
 overall_avg_rating = df['approval_rating'].mean()
 approval_counts = df['predicted_approval'].value_counts().to_dict()
@@ -101,17 +150,28 @@ summary_lines.append("DTI-Based Mortgage Approval Analysis Summary")
 summary_lines.append("=============================================")
 summary_lines.append(f"Total Applications Analyzed: {total_apps}")
 summary_lines.append(f"Overall Average Approval Rating: {overall_avg_rating:.3f}")
-# Use '>=' instead of the Unicode '≥' to avoid encoding issues
 summary_lines.append(f"Predicted Approvals (rating >= {threshold}): {approval_counts.get(1, 0)}")
 summary_lines.append(f"Predicted Denials (rating < {threshold}): {approval_counts.get(0, 0)}")
 summary_lines.append("\nAverage Approval Rating by Income Group:")
-for idx, row in grouped.iterrows():
+for idx, row in grouped_income.iterrows():
     summary_lines.append(f"  {row['income_group']}: {row['approval_rating']:.3f}")
+summary_lines.append("\nAverage Approval Rating by Gender:")
+for idx, row in grouped_gender.iterrows():
+    summary_lines.append(f"  {row['derived_sex']}: {row['approval_rating']:.3f}")
+summary_lines.append("\nAverage Approval Rating by Race:")
+for idx, row in grouped_race.iterrows():
+    summary_lines.append(f"  {row['derived_race']}: {row['approval_rating']:.3f}")
+summary_lines.append("\nAverage Approval Rating by Race & Gender:")
+for idx, row in grouped_rg.iterrows():
+    summary_lines.append(f"  {row['race_gender']}: {row['approval_rating']:.3f}")
 summary_lines.append("\nOutput Files:")
 summary_lines.append(f"  Histogram: {histogram_path}")
-summary_lines.append(f"  Bar Graph: {bargraph_path}")
+summary_lines.append(f"  Income Group Bar Graph: {bargraph_income_path}")
+summary_lines.append(f"  Gender Bar Graph: {bargraph_gender_path}")
+summary_lines.append(f"  Race Bar Graph: {bargraph_race_path}")
+summary_lines.append(f"  Race & Gender Bar Graph: {bargraph_rg_path}")
 summary_lines.append("  Summary Document: output/analysis_summary.txt")
-summary_lines.append("\nNote: This analysis ignores sensitive attributes such as race and ethnicity.")
+summary_lines.append("\nNote: This analysis ignores sensitive attributes in decision-making, but breakdowns by gender and race are provided for transparency.")
 
 summary_text = "\n".join(summary_lines)
 summary_path = "output/analysis_summary.txt"
@@ -119,6 +179,9 @@ with open(summary_path, "w", encoding="utf-8") as f:
     f.write(summary_text)
 
 print("✅ Analysis complete. Output files created:")
-print("   ", histogram_path)
-print("   ", bargraph_path)
-print("   ", summary_path)
+print("   Histogram:", histogram_path)
+print("   Income Group Bar Graph:", bargraph_income_path)
+print("   Gender Bar Graph:", bargraph_gender_path)
+print("   Race Bar Graph:", bargraph_race_path)
+print("   Race & Gender Bar Graph:", bargraph_rg_path)
+print("   Summary Document:", summary_path)
