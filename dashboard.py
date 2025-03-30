@@ -15,9 +15,6 @@ print("openai version:", importlib.metadata.version("openai"))
 
 # Run the DTI analysis and get image/text paths
 output_paths = run_mortgage_model()
-# Expect output_paths to have keys:
-# "income_bar", "gender_bar", "race_bar", "race_gender_bar", "summary", and "clearscore"
-# where "clearscore" points to your ClearScore summary file (e.g. "output/clear_score_summary.txt").
 
 @st.cache_data
 def load_data():
@@ -170,22 +167,21 @@ def show_dti_graphs():
     st.subheader("Approval by Race & Gender")
     st.image(output_paths["race_gender_bar"])
 
-    # Display the analysis summary
+    st.subheader("Combined Race & Gender Table")
+    st.image(output_paths["multicategorical_table"])
+
     with open(output_paths["summary"], "r", encoding="utf-8") as f:
         summary = f.read()
         st.subheader("Analysis Summary")
         st.text(summary)
 
-    # NEW: Display the ClearScore summary
-    with open(output_paths["clearscore"], "r", encoding="utf-8") as f:
-        clearscore_summary = f.read()
-        st.subheader("ClearScore Summary")
-        st.text(clearscore_summary)
-
     if st.button("Back to Home"):
         st.session_state.page = "Home"
 
 # Routing logic
+if 'page' not in st.session_state:
+    st.session_state.page = 'Home'
+
 if st.session_state.page == "Home":
     show_home()
 elif st.session_state.page == "Opportunity":

@@ -1,6 +1,54 @@
-DTI-Based Mortgage Approval Analysis Summary
-
+ClearScore - Understanding Loan Fairness Using ML
+=================================================
 Total Applications Analyzed: 9886
 Overall Average Approval Rating: 0.259
 Predicted Approvals (rating >= 0.5): 1192
 Predicted Denials (rating < 0.5): 8694
+
+Average Approval Rating by Income Group:
+  Low: 0.223
+  Medium: 0.213
+  High: 0.253
+  Very High: 0.348
+
+Average Approval Rating by Gender:
+  Female: 0.251
+  Male: 0.263
+
+Average Approval Rating by Race:
+  2 or more minority races: 0.330
+  American Indian or Alaska Native: 0.321
+  Asian: 0.232
+  Black or African American: 0.243
+  Native Hawaiian or Other Pacific Islander: 0.289
+  White: 0.265
+
+Approval Rate by Combined Race & Gender:
+  2 or more minority races Female: Applicants=7, Approved=0, Approval Rate=0.0%
+  2 or more minority races Male: Applicants=13, Approved=3, Approval Rate=23.1%
+  American Indian or Alaska Native Female: Applicants=12, Approved=1, Approval Rate=8.3%
+  American Indian or Alaska Native Male: Applicants=38, Approved=8, Approval Rate=21.1%
+  Asian Female: Applicants=498, Approved=36, Approval Rate=7.2%
+  Asian Male: Applicants=861, Approved=77, Approval Rate=8.9%
+  Black or African American Female: Applicants=403, Approved=46, Approval Rate=11.4%
+  Black or African American Male: Applicants=350, Approved=42, Approval Rate=12.0%
+  Native Hawaiian or Other Pacific Islander Female: Applicants=8, Approved=2, Approval Rate=25.0%
+  Native Hawaiian or Other Pacific Islander Male: Applicants=13, Approved=1, Approval Rate=7.7%
+  White Female: Applicants=2409, Approved=300, Approval Rate=12.5%
+  White Male: Applicants=5274, Approved=676, Approval Rate=12.8%
+
+ClearScore Calculation (Ethnicity-based):
+ClearScore = (Minimum Avg Approval Rating among Ethnic Groups) / (Maximum Avg Approval Rating among Ethnic Groups)
+Minimum Avg Approval Rating (Ethnicity): 0.234
+Maximum Avg Approval Rating (Ethnicity): 0.263
+Computed ClearScore: 0.890
+
+Output Files:
+  Income Group Bar Graph: output/approval_rating_bargraph_income.png
+  Gender Bar Graph: output/approval_rating_bargraph_gender.png
+  Race Bar Graph: output/approval_rating_bargraph_race.png
+  Combined Race & Gender Graph: output/multicategorical_graph.png
+  Combined Race & Gender Table: output/multicategorical_table.png
+  Analysis Summary: output/analysis_summary.txt
+
+Note: This analysis ignores sensitive attributes in decision-making, but provides breakdowns for transparency.
