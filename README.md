@@ -1,6 +1,106 @@
 # solhacks
-solhacks hackathon project
-credit scoring systems use either equality of opportunity or equality of outcomes in their algorithms to determine who is approved for a loan
-when purchasing a house.
-accord.edu states that "Equality of opportunity holds that as long as the process is fair and just, then the outcome is also fair and just. Equality of Outcome: The core essence of equality of outcomes is social justice. The objective of equality of outcome is not equality or justice but rather equity and social justice."
-we are creating an application where we input this exact data set to the application and select between the two models we created, one using equality of oppportunity and the other using equality of outcomes, and for each algorithm, the algorithm returns "got the loan" or "didn't get the loan" for each individual person. Then, at the end, we will have a third algorithm (called "comparison.alg") that compares the results from the previous two algorithms and shows the percentage disparity between the results of the two, so that we can closely examine and see the differences between the two implementations and have a conversation about what this means in the broader context of ethics of ai and what the future of loan prediction algorithms should look like.
+# FairScore: AI-Powered Fairness Analysis for Loan Approvals
+
+FairScore is an application developed to analyze fairness in loan approvals. It implements two approaches:
+- **Equality of Opportunity:** Evaluates loan applications using only financial merit (ignoring protected characteristics).
+- **Equality of Outcomes:** Adjusts decisions so that subgroups (e.g., "White Male", "Asian Female", "Hispanic Male", etc.) achieve similar approval rates by taking into account sensitive attributes.
+
+The application also includes an interactive dashboard (built with Streamlit) and an AI chatbot that explains and discusses the graphs.
+
+## Project Structure
+## Prerequisites
+
+- **Python 3.9+** is required.
+- Git for cloning the repository.
+- (Optional but recommended) A virtual environment to isolate dependencies.
+
+## Setup Instructions
+
+### 1. Clone the Repository
+
+- Clone the repository from GitHub:
+- ```bash
+- git clone https://github.com/alpg00/solhacks.git
+- cd solhacks
+
+### 2. Create and Activate a Virtual Environment (Optional but Recommended)
+
+Create a virtual environment:
+
+- bash
+- Copy
+- python -m venv venv
+
+Activate the virtual environment:
+
+- On macOS/Linux:
+
+- bash
+- Copy
+- source venv/bin/activate
+
+- On Windows:
+
+- bash
+- Copy
+- venv\Scripts\activate
+
+### 3. Install Dependencies
+- Install the required packages:
+
+- bash
+- Copy
+- pip install -r requirements.txt
+
+The requirements.txt file should include (but is not limited to):
+
+- openai
+
+- python-dotenv
+
+- streamlit
+
+- pandas
+
+- matplotlib
+
+- seaborn
+
+- numpy
+
+- pywebview
+
+### 4. Configure Environment Variables
+
+Create a .env file in the project root (if it doesn’t exist) and add your OpenAI API key:
+
+- ini
+- Copy
+- OPENAI_API_KEY=your_actual_openai_api_key_here
+
+### 5. Run the Application
+
+The main entry point is app.py. To launch the application, run:
+
+- bash
+- Copy
+- python app.py --input data/bigdata.csv --rate 0.5 --output decisions.json
+- --input: Path to the CSV file (e.g., data/bigdata.csv).
+
+- --rate: Target approval rate (a number between 0.0 and 1.0).
+
+- --output: Filename for saving the loan approval decisions (e.g., decisions.json).
+
+This command will:
+
+- Start the Streamlit dashboard.
+
+- Open a desktop window using PyWebView.
+
+- Process the loan application data using both fairness algorithms.
+
+- Display visualizations (graphs and tables) of the approval statistics.
+
+- Save the loan decisions to the specified JSON file.
+
+For questions or issues, please contact Alp Gokcehan at alpg@ad.unc.edu.
