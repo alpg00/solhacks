@@ -19,7 +19,6 @@ The application also includes an interactive dashboard (built with Streamlit) an
 ### 1. Clone the Repository
 
 - Clone the repository from GitHub:
-- ```bash
 - git clone https://github.com/alpg00/solhacks.git
 - cd solhacks
 
